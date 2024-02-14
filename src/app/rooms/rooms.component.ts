@@ -4,12 +4,16 @@ import {
   Component,
   DoCheck,
   OnInit,
+  QueryList,
+  SkipSelf,
   ViewChild,
+  ViewChildren,
 } from "@angular/core";
 import { Room, RoomList } from "./rooms";
 import { CommonModule } from "@angular/common";
 import { RoomsListComponent } from "../rooms-list/rooms-list.component";
 import { HeaderComponent } from "../header/header.component";
+import { RoomsService } from "./services/rooms.service";
 
 @Component({
   selector: "app-rooms",
@@ -35,48 +39,17 @@ export class RoomsComponent
 
   roomList: RoomList[] = [];
 
-  @ViewChild(HeaderComponent)
-  headerComponent!: HeaderComponent;
+  @ViewChild(HeaderComponent) headerComponent!: HeaderComponent;
 
-  constructor() {}
+  @ViewChildren(HeaderComponent)
+  headerChildrenComponent!: QueryList<HeaderComponent>;
+
+  // roomService = new RoomsService();
+
+  constructor(@SkipSelf() private roomService: RoomsService) {}
 
   ngOnInit(): void {
-    console.log(this.headerComponent);
-    this.roomList = [
-      {
-        roomNumber: 1,
-        roomType: "Deluxe Room",
-        amenities: "Air Conditioner, Free Wi-Fi, TV, Bathroom, Kitchen",
-        price: 500,
-        photos:
-          "https://pix8.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=1024x",
-        checkInTime: new Date("11-Nov-2021"),
-        checkOutTime: new Date("12-Nov-2021"),
-        rating: 4,
-      },
-      {
-        roomNumber: 2,
-        roomType: "Deluxe Room",
-        amenities: "Air Conditioner, Free Wi-Fi, TV, Bathroom, Kitchen",
-        price: 500,
-        photos:
-          "https://pix8.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=1024x",
-        checkInTime: new Date("11-Nov-2021"),
-        checkOutTime: new Date("12-Nov-2021"),
-        rating: 4.534234,
-      },
-      {
-        roomNumber: 3,
-        roomType: "Deluxe Room",
-        amenities: "Air Conditioner, Free Wi-Fi, TV, Bathroom, Kitchen",
-        price: 500,
-        photos:
-          "https://pix8.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg?ca=6&ce=1&s=1024x",
-        checkInTime: new Date("11-Nov-2021"),
-        checkOutTime: new Date("12-Nov-2021"),
-        rating: 2.6,
-      },
-    ];
+    this.roomList = this.roomService.getRooms();
   }
 
   ngDoCheck(): void {
@@ -84,7 +57,8 @@ export class RoomsComponent
   }
 
   ngAfterViewInit(): void {
-    this.headerComponent.title = "Rooms View";
+    // this.headerComponent.title = "Rooms View";
+    // console.log(this.headerChildrenComponent);
   }
 
   ngAfterViewChecked(): void {
